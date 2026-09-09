@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0b1220">
+<meta name="description" content="Golu — The VPS Assembly Orchestrion">
+<title>Golu — The VPS Assembly Orchestrion</title>
+
+<style>
+  :root{
+    --bg:#07101d;
+    --panel:#0d1726;
+    --panel-2:#111d2e;
+    --panel-3:#16243a;
+    --text:#edf4ff;
+    --muted:#91a1b7;
+    --line:#23344d;
+    --accent:#59a7ff;
+    --accent-2:#7c6cff;
+    --success:#36d399;
+    --warning:#f5b942;
+    --danger:#ff6678;
+    --shadow:0 18px 50px rgba(0,0,0,.28);
+    --radius:18px;
+  }
+
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;
+    min-height:100vh;
+    color:var(--text);
+    background:
+      radial-gradient(circle at 85% 0%, rgba(89,167,255,.13), transparent 30%),
+      radial-gradient(circle at 0% 20%, rgba(124,108,255,.10), transparent 28%),
+      var(--bg);
+    font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  }
+
+  button{
+    font:inherit;
+    color:inherit;
+    border:0;
+    cursor:pointer;
+  }
+
+  .app{
+    width:min(1420px, 100%);
+    margin:auto;
+    padding:22px;
+  }
+
+  /* Header */
+  .topbar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:20px;
+    padding:18px 20px;
+    background:rgba(13,23,38,.88);
+    border:1px solid var(--line);
+    border-radius:22px;
+    box-shadow:var(--shadow);
+    backdrop-filter:blur(16px);
+    position:sticky;
+    top:12px;
+    z-index:20;
+  }
+
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    min-width:0;
+  }
+
+  .logo{
+    width:50px;
+    height:50px;
+    border-radius:15px;
+    display:grid;
+    place-items:center;
+    font-weight:900;
+    font-size:20px;
+    background:linear-gradient(135deg,var(--accent-2),var(--accent));
+    box-shadow:0 8px 25px rgba(89,167,255,.25);
+  }
+
+  .brand h1{
+    margin:0;
+    font-size:20px;
+    letter-spacing:-.4px;
+  }
+
+  .brand p{
+    margin:3px 0 0;
+    color:var(--muted);
+    font-size:12px;
+  }
+
+  .top-actions{
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+
+  .icon-btn,.small-btn{
+    background:var(--panel-2);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:10px 12px;
+    transition:.18s ease;
+  }
+
+  .icon-btn:hover,.small-btn:hover{
+    border-color:#385276;
+    transform:translateY(-1px);
+    background:var(--panel-3);
+  }
+
+  /* Hero status */
+  .hero{
+    display:grid;
+    grid-template-columns:1.5fr .8fr;
+    gap:18px;
+    margin-top:18px;
+  }
+
+  .current{
+    padding:25px;
+    min-height:210px;
+    background:
+      linear-gradient(135deg,rgba(89,167,255,.12),rgba(124,108,255,.06)),
+      var(--panel);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    position:relative;
+    overflow:hidden;
+  }
+
+  .current:after{
+    content:"";
+    position:absolute;
+    width:210px;
+    height:210px;
+    border-radius:50%;
+    right:-80px;
+    top:-90px;
+    background:rgba(89,167,255,.08);
+    pointer-events:none;
+  }
+
+  .eyebrow{
+    color:var(--accent);
+    text-transform:uppercase;
+    letter-spacing:1.6px;
+    font-size:11px;
+    font-weight:800;
+  }
+
+  .current h2{
+    margin:9px 0 8px;
+    font-size:clamp(28px,4vw,44px);
+    letter-spacing:-1.5px;
+  }
+
+  .current-desc{
+    margin:0;
+    color:var(--muted);
+    max-width:700px;
+    line-height:1.55;
+  }
+
+  .status-line{
+    display:flex;
+    align-items:center;
+    gap:9px;
+    margin-top:20px;
+    color:#cbd7e8;
+    font-size:13px;
+  }
+
+  .dot{
+    width:9px;
+    height:9px;
+    border-radius:50%;
+    background:var(--success);
+    box-shadow:0 0 0 5px rgba(54,211,153,.09);
+  }
+
+  .timer-card{
+    padding:22px;
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+  }
+
+  .timer-head{
+    display:flex;
+    justify-content:space-between;
+    color:var(--muted);
+    font-size:12px;
+  }
+
+  .timer{
+    font-variant-numeric:tabular-nums;
+    font-size:46px;
+    font-weight:800;
+    letter-spacing:1px;
+    margin:8px 0;
+  }
+
+  .timer-target{
+    color:var(--muted);
+    font-size:12px;
+  }
+
+  .timer-progress{
+    height:7px;
+    background:#1a2940;
+    border-radius:99px;
+    overflow:hidden;
+    margin-top:14px;
+  }
+
+  .timer-progress span{
+    display:block;
+    height:100%;
+    width:0%;
+    background:linear-gradient(90deg,var(--accent-2),var(--accent));
+    border-radius:inherit;
+    transition:width .3s linear;
+  }
+
+  .timer-actions{
+    display:flex;
+    gap:8px;
+    margin-top:16px;
+  }
+
+  .timer-actions button{flex:1}
+
+  /* Main grid */
+  .layout{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) 330px;
+    gap:18px;
+    margin-top:18px;
+  }
+
+  .panel{
+    background:rgba(13,23,38,.9);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+  }
+
+  .panel-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:12px;
+    padding:18px 20px;
+    border-bottom:1px solid var(--line);
+  }
+
+  .panel-title{
+    margin:0;
+    font-size:15px;
+  }
+
+  .panel-subtitle{
+    color:var(--muted);
+    font-size:11px;
+  }
+
+  /* Timeline */
+  .steps{
+    padding:12px;
+  }
+
+  .step{
+    width:100%;
+    display:grid;
+    grid-template-columns:42px 1fr auto;
+    align-items:center;
+    gap:14px;
+    text-align:left;
+    padding:14px;
+    margin-bottom:7px;
+    background:transparent;
+    border:1px solid transparent;
+    border-radius:15px;
+    transition:.16s ease;
+  }
+
+  .step:hover{
+    background:var(--panel-2);
+    border-color:var(--line);
+  }
+
+  .step.active{
+    background:linear-gradient(90deg,rgba(89,167,255,.14),rgba(124,108,255,.05));
+    border-color:#31537e;
+  }
+
+  .step-num{
+    width:38px;
+    height:38px;
+    display:grid;
+    place-items:center;
+    border-radius:12px;
+    color:#9fb0c6;
+    background:#101d30;
+    border:1px solid var(--line);
+    font-size:12px;
+    font-weight:800;
+  }
+
+  .step.active .step-num{
+    color:white;
+    background:linear-gradient(135deg,var(--accent-2),var(--accent));
+    border-color:transparent;
+  }
+
+  .step-title{
+    font-size:14px;
+    font-weight:750;
+  }
+
+  .step-note{
+    color:var(--muted);
+    font-size:11px;
+    margin-top:3px;
+  }
+
+  .step-arrow{
+    color:#60728b;
+    font-size:18px;
+  }
+
+  /* Right controls */
+  .controls{
+    padding:16px;
+  }
+
+  .big-play{
+    width:100%;
+    padding:18px;
+    border-radius:16px;
+    background:linear-gradient(135deg,var(--accent-2),var(--accent));
+    font-weight:850;
+    box-shadow:0 10px 30px rgba(89,167,255,.16);
+    transition:.18s ease;
+  }
+
+  .big-play:hover{transform:translateY(-2px)}
+  .big-play:active{transform:translateY(0)}
+
+  .control-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+    margin-top:9px;
+  }
+
+  .control-grid button{
+    padding:12px;
+    background:var(--panel-2);
+    border:1px solid var(--line);
+    border-radius:12px;
+    font-size:12px;
+    font-weight:700;
+  }
+
+  .control-grid button:hover{
+    background:var(--panel-3);
+    border-color:#385276;
+  }
+
+  .section-label{
+    margin:22px 2px 9px;
+    color:#73859e;
+    text-transform:uppercase;
+    letter-spacing:1.3px;
+    font-size:10px;
+    font-weight:850;
+  }
+
+  .drills{
+    display:grid;
+    gap:8px;
+  }
+
+  .drill{
+    padding:14px;
+    background:#101d30;
+    border:1px solid var(--line);
+    border-radius:13px;
+    text-align:left;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+  }
+
+  .drill strong{font-size:13px}
+  .drill span{font-size:11px;color:var(--muted)}
+  .drill:hover{border-color:#456183;background:#15253b}
+
+  .volume-row{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-top:8px;
+    padding:10px 2px;
+  }
+
+  input[type="range"]{
+    width:100%;
+    accent-color:var(--accent);
+  }
+
+  .now-playing{
+    margin-top:16px;
+    padding:13px;
+    background:#0b1524;
+    border:1px solid var(--line);
+    border-radius:13px;
+  }
+
+  .now-playing small{
+    color:var(--muted);
+    font-size:10px;
+    text-transform:uppercase;
+    letter-spacing:1px;
+  }
+
+  .now-playing div{
+    margin-top:4px;
+    font-size:12px;
+    line-height:1.45;
+  }
+
+  /* Footer */
+  .footer{
+    margin:18px 0 4px;
+    display:flex;
+    justify-content:space-between;
+    gap:12px;
+    color:#62748c;
+    font-size:11px;
+  }
+
+  .kbd{
+    display:inline-block;
+    padding:2px 6px;
+    border:1px solid var(--line);
+    border-bottom-color:#40516b;
+    border-radius:5px;
+    background:#101a29;
+    color:#a7b6c9;
+  }
+
+  /* Mobile */
+  @media(max-width:900px){
+    .hero,.layout{grid-template-columns:1fr}
+    .timer-card{min-height:190px}
+  }
+
+  @media(max-width:600px){
+    .app{padding:10px}
+    .topbar{top:6px;padding:13px;border-radius:17px}
+    .brand h1{font-size:16px}
+    .brand p{display:none}
+    .logo{width:43px;height:43px}
+    .top-actions .small-btn{display:none}
+    .current{padding:20px}
+    .current h2{font-size:30px}
+    .step{grid-template-columns:38px 1fr 16px;padding:12px}
+    .step-num{width:34px;height:34px}
+    .timer{font-size:38px}
+  }
+</style>
+</head>
+
+<body>
+<div class="app">
+
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">G</div>
+      <div>
+        <h1>Golu — The VPS Assembly Orchestrion</h1>
+        <p>Varanasi Public School · Morning Assembly Control</p>
+      </div>
+    </div>
+    <div class="top-actions">
+      <button class="small-btn" id="resetAll">Reset</button>
+      <button class="small-btn" id="fullscreenBtn">Fullscreen</button>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="current">
+      <div class="eyebrow">Assembly control</div>
+      <h2 id="currentTitle">Ready to begin</h2>
+      <p class="current-desc" id="currentDesc">
+        Choose any stage below. Audio will play only when you click it — nothing advances automatically.
+      </p>
+      <div class="status-line">
+        <span class="dot" id="statusDot"></span>
+        <span id="statusText">System ready · No audio playing</span>
+      </div>
+    </div>
+
+    <div class="timer-card">
+      <div class="timer-head">
+        <span>Assembly timer</span>
+        <span>30 min target</span>
+      </div>
+      <div class="timer" id="timer">00:00</div>
+      <div class="timer-target">Use this as a simple master-time reference.</div>
+      <div class="timer-progress"><span id="timerBar"></span></div>
+      <div class="timer-actions">
+        <button class="small-btn" id="timerStart">Start</button>
+        <button class="small-btn" id="timerPause">Pause</button>
+        <button class="small-btn" id="timerReset">Reset</button>
+      </div>
+    </div>
+  </section>
+
+  <main class="layout">
+
+    <section class="panel">
+      <div class="panel-head">
+        <div>
+          <h3 class="panel-title">Assembly sequence</h3>
+          <div class="panel-subtitle">Click a stage to select and play it. The next stage never starts by itself.</div>
+        </div>
+        <div class="panel-subtitle" id="progressText">0 / 16</div>
+      </div>
+      <div class="steps" id="steps"></div>
+    </section>
+
+    <aside class="panel">
+      <div class="panel-head">
+        <div>
+          <h3 class="panel-title">Live controls</h3>
+          <div class="panel-subtitle">Quick controls for the operator</div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <button class="big-play" id="playSelected">▶ Play selected stage</button>
+
+        <div class="control-grid">
+          <button id="previousBtn">← Previous</button>
+          <button id="nextBtn">Next →</button>
+          <button id="stopBtn">■ Stop</button>
+          <button id="replayBtn">↻ Replay</button>
+        </div>
+
+        <div class="section-label">Assembly commands</div>
+        <div class="drills">
+          <button class="drill" data-audio="stand_at_ease.wav" data-title="Stand at Ease">
+            <div><strong>Stand at Ease</strong><br><span>Quick command</span></div>
+            <b>▶</b>
+          </button>
+          <button class="drill" data-audio="attention.wav" data-title="Attention">
+            <div><strong>Attention</strong><br><span>Quick command</span></div>
+            <b>▶</b>
+          </button>
+          <button class="drill" data-audio="4_stand_at_ease_attention.wav" data-title="Stand at Ease + Attention">
+            <div><strong>Stand at Ease + Attention</strong><br><span>Combined drill</span></div>
+            <b>▶</b>
+          </button>
+        </div>
+
+        <div class="section-label">Volume</div>
+        <div class="volume-row">
+          <span>🔊</span>
+          <input id="volume" type="range" min="0" max="1" step="0.01" value="1">
+        </div>
+
+        <div class="now-playing">
+          <small>Now playing</small>
+          <div id="nowPlaying">Nothing is playing.</div>
+        </div>
+      </div>
+    </aside>
+
+  </main>
+
+  <div class="footer">
+    <span>Manual mode · No autoplay · Built for VPS morning assembly</span>
+    <span><span class="kbd">Space</span> Play/Stop &nbsp; <span class="kbd">F</span> Fullscreen</span>
+  </div>
+</div>
+
+<audio id="player" preload="none"></audio>
+
+<script>
+(() => {
+  "use strict";
+
+  /*
+    GOLU — THE VPS ASSEMBLY ORCHESTRION
+
+    Expected GitHub Pages structure:
+
+      index.html
+      audios/
+        1_intro.wav
+        2_students_calling.wav
+        3_now_i_Can_see.wav
+        4_stand_at_ease_attention.wav
+        5_the_morning_sun.wav
+        meditation.wav
+        6_english_prayer.wav
+        7_pleadge.wav
+        8_thought.wav
+        9_top_new_headlines.wav
+        10_gk_quiz.wav
+        11_subject_enrichment.wav
+        12_calling_sandeep_sir_for_speech.wav
+        13_sandeep_sir_speech.wav
+        14_calling_principal.wav
+        15_get_ready_nation_anthem.wav
+        16_thank_you.wav
+        stand_at_ease.wav
+        attention.wav
+        stand_at_ease_attention.wav
+
+    If your combined command audio has a different filename,
+    change only the filename in the drill button above.
+  */
+
+  const audioBase = "audios/";
+
+  const stages = [
+    {
+      id: 1,
+      title: "Grand Opening",
+      note: "Welcome · Robot introduction · Engineers' Day",
+      file: "1_intro.wav"
+    },
+    {
+      id: 2,
+      title: "Students Calling",
+      note: "Classes 9 & 11 · Assembly area",
+      file: "2_students_calling.wav"
+    },
+    {
+      id: 3,
+      title: "Everyone Is Aligned",
+      note: "Confirm students are ready",
+      file: "3_now_i_Can_see.wav"
+    },
+    {
+      id: 4,
+      title: "Stand at Ease + Attention",
+      note: "Opening assembly command",
+      file: "4_stand_at_ease_attention.wav"
+    },
+    {
+      id: 5,
+      title: "The Morning Sun",
+      note: "Inspirational opening",
+      file: "5_the_morning_sun.wav"
+    },
+    {
+      id: 6,
+      title: "Meditation",
+      note: "Quiet reflection before prayer",
+      file: "6_meditation.wav"
+    },
+    {
+      id: 7,
+      title: "English Prayer",
+      note: "Prayer introduction / prayer",
+      file: "7_english_prayer.wav"
+    },
+    {
+      id: 8,
+      title: "Pledge",
+      note: "National pledge",
+      file: "8_pleadge.wav"
+    },
+    {
+      id: 9,
+      title: "Thought",
+      note: "Thought for the day",
+      file: "9_thought.wav"
+    },
+    {
+      id: 10,
+      title: "Top Headlines",
+      note: "Today's news",
+      file: "10_top_new_headlines.wav"
+    },
+    {
+      id: 11,
+      title: "GK Quiz",
+      note: "General knowledge questions",
+      file: "11_gk_quiz.wav"
+    },
+    {
+      id: 12,
+      title: "Subject Enrichment",
+      note: "Aayush Singh",
+      file: "12_subject_enrichment.wav"
+    },
+    {
+      id: 13,
+      title: "Speech Introduction",
+      note: "Calling Sandeep Sir",
+      file: "13_calling_sandeep_sir_for_speech.wav"
+    },
+    {
+      id: 14,
+      title: "Sandeep Sir's Speech",
+      note: "Sandeep Sir's message",
+      file: "14_sandeep_sir_speech.wav"
+    },
+    {
+      id: 15,
+      title: "Principal Introduction",
+      note: "Calling Principal",
+      file: "15_calling_principal.wav"
+    },
+    {
+      id: 16,
+      title: "Get Ready for Anthem",
+      note: "Preparation for national anthem",
+      file: "16_get_ready_nation_anthem.wav"
+    },
+    {
+      id: 17,
+      title: "Thank You & Dispersal",
+      note: "Move to classes line by line",
+      file: "17_thank_you.wav"
+    }
+  ];
+
+  const player = document.getElementById("player");
+  const stepsEl = document.getElementById("steps");
+  const currentTitle = document.getElementById("currentTitle");
+  const currentDesc = document.getElementById("currentDesc");
+  const statusText = document.getElementById("statusText");
+  const nowPlaying = document.getElementById("nowPlaying");
+  const progressText = document.getElementById("progressText");
+  const volume = document.getElementById("volume");
+
+  let selectedIndex = 0;
+  let lastPlayed = null;
+
+  // ---------- Render ----------
+  function renderStages() {
+    stepsEl.innerHTML = stages.map((stage, index) => `
+      <button class="step ${index === selectedIndex ? "active" : ""}" data-index="${index}">
+        <span class="step-num">${String(stage.id).padStart(2, "0")}</span>
+        <span>
+          <div class="step-title">${escapeHtml(stage.title)}</div>
+          <div class="step-note">${escapeHtml(stage.note)}</div>
+        </span>
+        <span class="step-arrow">›</span>
+      </button>
+    `).join("");
+
+    progressText.textContent = `${selectedIndex + 1} / ${stages.length}`;
+
+    document.querySelectorAll(".step").forEach(btn => {
+      btn.addEventListener("click", () => {
+        selectStage(Number(btn.dataset.index));
+        playSelected();
+      });
+    });
+  }
+
+  function selectStage(index) {
+    if (index < 0 || index >= stages.length) return;
+    selectedIndex = index;
+    const stage = stages[index];
+
+    currentTitle.textContent = stage.title;
+    currentDesc.textContent = `${stage.note}. Click again anytime to replay this stage.`;
+    progressText.textContent = `${selectedIndex + 1} / ${stages.length}`;
+
+    document.querySelectorAll(".step").forEach((el, i) => {
+      el.classList.toggle("active", i === selectedIndex);
+    });
+  }
+
+  // ---------- Audio ----------
+  async function playFile(filename, title, stageIndex = null) {
+    stopAudio(false);
+
+    player.src = audioBase + filename;
+    player.volume = Number(volume.value);
+    player.currentTime = 0;
+
+    lastPlayed = { filename, title, stageIndex };
+
+    currentTitle.textContent = title;
+    currentDesc.textContent = "Audio is playing. The assembly will wait here until you choose the next stage.";
+    statusText.textContent = `Playing · ${title}`;
+    nowPlaying.textContent = title;
+
+    try {
+      await player.play();
+    } catch (error) {
+      statusText.textContent = "Could not play this audio file.";
+      nowPlaying.textContent = "Check the filename and make sure the audio is inside the /audios folder.";
+      console.error(error);
+    }
+  }
+
+  function playSelected() {
+    const stage = stages[selectedIndex];
+    playFile(stage.file, stage.title, selectedIndex);
+  }
+
+  function stopAudio(updateText = true) {
+    player.pause();
+    player.currentTime = 0;
+
+    if (updateText) {
+      statusText.textContent = "Stopped · Ready for the next command";
+      nowPlaying.textContent = "Nothing is playing.";
+    }
+  }
+
+  // When audio ends, DO NOT advance.
+  player.addEventListener("ended", () => {
+    statusText.textContent = "Finished · Waiting for your next command";
+    nowPlaying.textContent = "Finished — choose the next stage manually.";
+  });
+
+  player.addEventListener("timeupdate", () => {
+    // Kept intentionally simple for fast UI operation.
+  });
+
+  // ---------- Main controls ----------
+  document.getElementById("playSelected").addEventListener("click", playSelected);
+
+  document.getElementById("stopBtn").addEventListener("click", () => stopAudio(true));
+
+  document.getElementById("replayBtn").addEventListener("click", () => {
+    if (lastPlayed) {
+      playFile(lastPlayed.filename, lastPlayed.title, lastPlayed.stageIndex);
+    } else {
+      playSelected();
+    }
+  });
+
+  document.getElementById("previousBtn").addEventListener("click", () => {
+    selectStage(Math.max(0, selectedIndex - 1));
+  });
+
+  document.getElementById("nextBtn").addEventListener("click", () => {
+    selectStage(Math.min(stages.length - 1, selectedIndex + 1));
+  });
+
+  // ---------- Quick drill buttons ----------
+  document.querySelectorAll(".drill").forEach(button => {
+    button.addEventListener("click", () => {
+      playFile(
+        button.dataset.audio,
+        button.dataset.title,
+        null
+      );
+    });
+  });
+
+  volume.addEventListener("input", () => {
+    player.volume = Number(volume.value);
+  });
+
+  // ---------- Fullscreen ----------
+  document.getElementById("fullscreenBtn").addEventListener("click", toggleFullscreen);
+
+  async function toggleFullscreen() {
+    try {
+      if (!document.fullscreenElement) {
+        await document.documentElement.requestFullscreen();
+      } else {
+        await document.exitFullscreen();
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  // ---------- Reset ----------
+  document.getElementById("resetAll").addEventListener("click", resetApp);
+
+  function resetApp() {
+    stopAudio(false);
+    selectedIndex = 0;
+    selectStage(0);
+    statusText.textContent = "System ready · No audio playing";
+    nowPlaying.textContent = "Nothing is playing.";
+    timerReset();
+  }
+
+  // ---------- 30-minute master timer ----------
+  const TIMER_LIMIT = 30 * 60;
+  let elapsedSeconds = 0;
+  let timerInterval = null;
+
+  const timerEl = document.getElementById("timer");
+  const timerBar = document.getElementById("timerBar");
+
+  function updateTimer() {
+    const mins = Math.floor(elapsedSeconds / 60);
+    const secs = elapsedSeconds % 60;
+    timerEl.textContent =
+      `${String(mins).padStart(2,"0")}:${String(secs).padStart(2,"0")}`;
+
+    const percentage = Math.min(100, (elapsedSeconds / TIMER_LIMIT) * 100);
+    timerBar.style.width = percentage + "%";
+
+    if (elapsedSeconds >= TIMER_LIMIT) {
+      clearInterval(timerInterval);
+      timerInterval = null;
+      statusText.textContent = "30-minute target reached · Assembly timer stopped";
+    }
+  }
+
+  function timerStart() {
+    if (timerInterval) return;
+    timerInterval = setInterval(() => {
+      elapsedSeconds++;
+      updateTimer();
+    }, 1000);
+  }
+
+  function timerPause() {
+    clearInterval(timerInterval);
+    timerInterval = null;
+  }
+
+  function timerReset() {
+    timerPause();
+    elapsedSeconds = 0;
+    updateTimer();
+  }
+
+  document.getElementById("timerStart").addEventListener("click", timerStart);
+  document.getElementById("timerPause").addEventListener("click", timerPause);
+  document.getElementById("timerReset").addEventListener("click", timerReset);
+
+  // ---------- Keyboard shortcuts ----------
+  document.addEventListener("keydown", e => {
+    if (e.target.matches("input,textarea,select")) return;
+
+    if (e.code === "Space") {
+      e.preventDefault();
+      if (!player.paused) {
+        stopAudio(true);
+      } else {
+        playSelected();
+      }
+    }
+
+    if (e.key.toLowerCase() === "f") {
+      toggleFullscreen();
+    }
+
+    if (e.key === "ArrowRight") {
+      selectStage(Math.min(stages.length - 1, selectedIndex + 1));
+    }
+
+    if (e.key === "ArrowLeft") {
+      selectStage(Math.max(0, selectedIndex - 1));
+    }
+  });
+
+  // ---------- Small safety helper ----------
+  function escapeHtml(value) {
+    return String(value)
+      .replaceAll("&","&amp;")
+      .replaceAll("<","&lt;")
+      .replaceAll(">","&gt;")
+      .replaceAll('"',"&quot;")
+      .replaceAll("'","&#039;");
+  }
+
+  // ---------- Startup ----------
+  renderStages();
+  selectStage(0);
+  updateTimer();
+
+})();
+</script>
+</body>
+</html>
